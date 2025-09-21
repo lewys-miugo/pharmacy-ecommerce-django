@@ -1,1 +1,41 @@
 requirements.md
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+*.egg-info/
+*.egg
+
+# ---- Django ----
+*.log
+*.pot
+*.py,cover
+db.sqlite3          # Ignore default local SQLite DB (if using Postgres/MySQL in production, keep settings.py connection)
+media/              # User uploaded files (can be stored on S3 in prod)
+staticfiles/        # Collected static files (use `collectstatic` in production)
+
+# ---- Environments ----
+.env                # Local environment variables (SECRET_KEY, DB creds)
+.env.*              # e.g. .env.dev, .env.prod
+venv/
+.venv/
+env/
+ENV/
+
+# ---- IDEs & Editors ----
+.vscode/
+.idea/
+*.swp
+
+# ---- OS files ----
+.DS_Store
+Thumbs.db
+
+# ---- Coverage / Testing ----
+.coverage
+htmlcov/
+.tox/
+pytest_cache/

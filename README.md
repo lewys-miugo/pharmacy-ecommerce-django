@@ -15,10 +15,11 @@ A Django REST API backend for e-commerce with hierarchical categories, products,
 
 1. Clone the repository
 2. Copy environment variables: `cp .env.example .env`
-3. Start services: `docker-compose up -d`
-4. Run migrations: `docker-compose exec web python manage.py migrate`
-5. Create superuser: `docker-compose exec web python manage.py createsuperuser`
-6. Load sample data: `docker-compose exec web python manage.py seed_data`
+3. Start services: `docker compose up -d`
+4. run users migration: `docker compose exec web python manage.py makemigrations users`
+5. Run migrations: `docker compose exec web python manage.py migrate`
+6. Create superuser: `docker compose exec web python manage.py createsuperuser`
+7. Load sample data: `docker compose exec web python manage.py seed_data`
 
 ## API Endpoints
 
@@ -29,8 +30,8 @@ A Django REST API backend for e-commerce with hierarchical categories, products,
 
 ## Testing
 
-Run tests: `docker-compose exec web python manage.py test`
-Run with coverage: `docker-compose exec web pytest --cov=project --cov-report=term-missing`
+Run tests: `docker compose exec web python manage.py test`
+Run with coverage: `docker compose exec web pytest --cov=project --cov-report=term-missing`
 
 ## Environment Variables
 
