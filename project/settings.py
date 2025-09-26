@@ -71,7 +71,7 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 # Database
 DATABASES = {
-    'default': env.db()
+    'default': env.db(default='sqlite:///db.sqlite3')
 }
 
 # Custom user model
