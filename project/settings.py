@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'categories',
     'products',
     'orders',
+    'frontend',  # Add frontend app
 ]
 
 MIDDLEWARE = [

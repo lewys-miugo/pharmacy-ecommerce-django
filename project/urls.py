@@ -11,4 +11,5 @@ urlpatterns = [
     path('api/', include('categories.urls')),
     path('api/', include('products.urls')),
     path('api/', include('orders.urls')),
+    path('', include('frontend.urls')),  # Add frontend URLs
 ]
