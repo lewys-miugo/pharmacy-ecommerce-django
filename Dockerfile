@@ -15,8 +15,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project
 COPY . .
 
-# Collect static files and run migrations in production
-RUN python manage.py collectstatic --noinput || true
+# Make build script executable
+RUN chmod +x build.sh
+
+# Collect static files
+RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000
 

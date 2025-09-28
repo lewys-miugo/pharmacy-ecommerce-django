@@ -1,72 +1,120 @@
 from django.core.management.base import BaseCommand
-from django.utils.text import slugify
+from django.contrib.auth import get_user_model
 from categories.models import Category
 from products.models import Product
 from decimal import Decimal
 
+User = get_user_model()
+
 class Command(BaseCommand):
-    help = 'Seed database with sample categories and products (idempotent)'
+    help = 'Seed the database with sample data'
 
     def handle(self, *args, **options):
-        # Create category tree (4 levels)
-        root, _ = Category.objects.get_or_create(
-            slug='all-products',
-            defaults={'name': 'All Products'}
-        )
-
-        # Level 2
-        electronics, _ = Category.objects.get_or_create(
-            slug='electronics', defaults={'name': 'Electronics', 'parent': root}
-        )
-        clothing, _ = Category.objects.get_or_create(
-            slug='clothing', defaults={'name': 'Clothing', 'parent': root}
-        )
-
-        # Level 3
-        phones, _ = Category.objects.get_or_create(
-            slug='phones', defaults={'name': 'Phones', 'parent': electronics}
-        )
-        laptops, _ = Category.objects.get_or_create(
-            slug='laptops', defaults={'name': 'Laptops', 'parent': electronics}
-        )
-        mens, _ = Category.objects.get_or_create(
-            slug='mens-clothing', defaults={'name': "Men's Clothing", 'parent': clothing}
-        )
-        womens, _ = Category.objects.get_or_create(
-            slug='womens-clothing', defaults={'name': "Women's Clothing", 'parent': clothing}
-        )
-
-        # Level 4
-        smartphones, _ = Category.objects.get_or_create(
-            slug='smartphones', defaults={'name': 'Smartphones', 'parent': phones}
-        )
-        gaming_laptops, _ = Category.objects.get_or_create(
-            slug='gaming-laptops', defaults={'name': 'Gaming Laptops', 'parent': laptops}
-        )
-
-        # Create sample products (safe create_or_update)
-        products_data = [
-            {'sku': 'SKU001', 'name': 'iPhone 15', 'price': Decimal('999.99'), 'categories': [smartphones]},
-            {'sku': 'SKU002', 'name': 'Samsung Galaxy S24', 'price': Decimal('899.99'), 'categories': [smartphones]},
-            {'sku': 'SKU003', 'name': 'MacBook Pro', 'price': Decimal('1999.99'), 'categories': [laptops]},
-            {'sku': 'SKU004', 'name': 'Gaming Laptop X1', 'price': Decimal('1499.99'), 'categories': [gaming_laptops]},
-            {'sku': 'SKU005', 'name': 'Cotton T-Shirt', 'price': Decimal('29.99'), 'categories': [mens]},
-            {'sku': 'SKU006', 'name': 'Summer Dress', 'price': Decimal('79.99'), 'categories': [womens]},
+        self.stdout.write('Seeding database...')
+        
+        # Create categories
+        categories_data = [
+            {'name': 'Electronics', 'slug': 'electronics', 'parent': None},
+            {'name': 'Clothing', 'slug': 'clothing', 'parent': None},
+            {'name': 'Phones', 'slug': 'phones', 'parent': 'Electronics'},
+            {'name': 'Laptops', 'slug': 'laptops', 'parent': 'Electronics'},
+            {'name': "Men's Clothing", 'slug': 'mens-clothing', 'parent': 'Clothing'},
+            {'name': "Women's Clothing", 'slug': 'womens-clothing', 'parent': 'Clothing'},
         ]
-
-        for data in products_data:
-            product, created = Product.objects.update_or_create(
-                sku=data['sku'],
+        
+        created_categories = {}
+        for cat_data in categories_data:
+            parent = None
+            if cat_data['parent']:
+                parent = created_categories.get(cat_data['parent'])
+            
+            category, created = Category.objects.get_or_create(
+                slug=cat_data['slug'],
                 defaults={
-                    'name': data['name'],
-                    'description': f'Description for {data["name"]}',
-                    'price': data['price']
+                    'name': cat_data['name'],
+                    'parent': parent
                 }
             )
-            product.categories.set(data['categories'])
-
-        self.stdout.write(
-            self.style.SUCCESS(
-                f"Seed completed: {Category.objects.count()} categories, {Product.objects.count()} products"
+            created_categories[cat_data['name']] = category
+            if created:
+                self.stdout.write(f'Created category: {category.name}')
+        
+        # Create products
+        products_data = [
+            {
+                'sku': 'PHONE001',
+                'name': 'iPhone 15',
+                'description': 'Latest iPhone with advanced features',
+                'price': Decimal('999.99'),
+                'categories': ['Electronics', 'Phones']
+            },
+            {
+                'sku': 'PHONE002',
+                'name': 'Samsung Galaxy S24',
+                'description': 'Premium Android smartphone',
+                'price': Decimal('899.99'),
+                'categories': ['Electronics', 'Phones']
+            },
+            {
+                'sku': 'LAPTOP001',
+                'name': 'MacBook Pro',
+                'description': 'Professional laptop for developers',
+                'price': Decimal('1999.99'),
+                'categories': ['Electronics', 'Laptops']
+            },
+            {
+                'sku': 'LAPTOP002',
+                'name': 'Gaming Laptop X1',
+                'description': 'High-performance gaming laptop',
+                'price': Decimal('1499.99'),
+                'categories': ['Electronics', 'Laptops']
+            },
+            {
+                'sku': 'CLOTH001',
+                'name': 'Cotton T-Shirt',
+                'description': 'Comfortable cotton t-shirt',
+                'price': Decimal('29.99'),
+                'categories': ['Clothing', "Men's Clothing"]
+            },
+            {
+                'sku': 'CLOTH002',
+                'name': 'Summer Dress',
+                'description': 'Light and comfortable summer dress',
+                'price': Decimal('79.99'),
+                'categories': ['Clothing', "Women's Clothing"]
+            },
+        ]
+        
+        for prod_data in products_data:
+            product, created = Product.objects.get_or_create(
+                sku=prod_data['sku'],
+                defaults={
+                    'name': prod_data['name'],
+                    'description': prod_data['description'],
+                    'price': prod_data['price']
+                }
             )
+            
+            if created:
+                # Add categories
+                for cat_name in prod_data['categories']:
+                    if cat_name in created_categories:
+                        product.categories.add(created_categories[cat_name])
+                
+                self.stdout.write(f'Created product: {product.name}')
+        
+        # Create sample customer
+        customer, created = User.objects.get_or_create(
+            username='customer',
+            defaults={
+                'email': 'customer@example.com',
+                'display_name': 'Sample Customer',
+                'is_customer': True
+            }
         )
+        if created:
+            customer.set_password('customer123')
+            customer.save()
+            self.stdout.write('Created sample customer: customer/customer123')
+        
+        self.stdout.write(self.style.SUCCESS('Database seeded successfully!'))
