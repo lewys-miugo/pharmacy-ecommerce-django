@@ -2,7 +2,7 @@
 
 A Django REST API backend for e-commerce with hierarchical categories, products, orders, and OpenID Connect authentication.
 
-[Live demo](https://your-app-name.onrender.com/)
+[Live demo](https://pharmacy-ecommerce-django.onrender.com/)
 
 ## Features
 
