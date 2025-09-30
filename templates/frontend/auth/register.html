@@ -16,38 +16,58 @@
                         <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
                         {{ form.username }}
                         {% if form.username.errors %}
-                            <div class="text-danger">{{ form.username.errors }}</div>
+                            <div class="text-danger">
+                                {% for error in form.username.errors %}
+                                    <small>{{ error }}</small><br>
+                                {% endfor %}
+                            </div>
                         {% endif %}
                     </div>
                     <div class="mb-3">
                         <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
                         {{ form.email }}
                         {% if form.email.errors %}
-                            <div class="text-danger">{{ form.email.errors }}</div>
+                            <div class="text-danger">
+                                {% for error in form.email.errors %}
+                                    <small>{{ error }}</small><br>
+                                {% endfor %}
+                            </div>
                         {% endif %}
                     </div>
                     <div class="mb-3">
                         <label for="{{ form.display_name.id_for_label }}" class="form-label">Display Name (Optional)</label>
                         {{ form.display_name }}
                         {% if form.display_name.errors %}
-                            <div class="text-danger">{{ form.display_name.errors }}</div>
+                            <div class="text-danger">
+                                {% for error in form.display_name.errors %}
+                                    <small>{{ error }}</small><br>
+                                {% endfor %}
+                            </div>
                         {% endif %}
+                        <div class="form-text">{{ form.display_name.help_text }}</div>
                     </div>
                     <div class="mb-3">
                         <label for="{{ form.password1.id_for_label }}" class="form-label">Password</label>
                         {{ form.password1 }}
                         {% if form.password1.errors %}
-                            <div class="text-danger">{{ form.password1.errors }}</div>
+                            <div class="text-danger">
+                                {% for error in form.password1.errors %}
+                                    <small>{{ error }}</small><br>
+                                {% endfor %}
+                            </div>
                         {% endif %}
                     </div>
                     <div class="mb-3">
                         <label for="{{ form.password2.id_for_label }}" class="form-label">Confirm Password</label>
                         {{ form.password2 }}
                         {% if form.password2.errors %}
-                            <div class="text-danger">{{ form.password2.errors }}</div>
+                            <div class="text-danger">
+                                {% for error in form.password2.errors %}
+                                    <small>{{ error }}</small><br>
+                                {% endfor %}
+                            </div>
                         {% endif %}
                     </div>
-                    {{ form.is_customer }}
                     <button type="submit" class="btn btn-primary w-100">Register</button>
                 </form>
                 <div class="text-center mt-3">
