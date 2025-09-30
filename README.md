@@ -14,15 +14,108 @@ A Django REST API backend for e-commerce with hierarchical categories, products,
 - REST API with comprehensive test coverage
 - Full frontend with admin CRUD and customer ordering
 
-## Quick Start (Local Development)
+## Local Development Setup
 
-1. Clone the repository
-2. Copy environment variables: `cp .env.example .env`
-3. Start services: `docker compose up -d`
-4. Run users migration: `docker compose exec web python manage.py makemigrations users`
-5. Run migrations: `docker compose exec web python manage.py migrate`
-6. Create superuser: `docker compose exec web python manage.py createsuperuser`
-7. Load sample data: `docker compose exec web python manage.py seed_data`
+### Prerequisites
+- Docker and Docker Compose installed
+- Git installed
+
+### Step-by-Step Setup
+
+1. **Clone the repository:**
+   ```bash
+   git clone <your-repo-url>
+   cd django-ecommerce
+   ```
+
+2. **Copy environment variables:**
+   ```bash
+   cp .env.example .env
+   ```
+
+3. **Start the services:**
+   ```bash
+   docker compose up -d
+   ```
+
+4. **Wait for services to be ready** (about 30-60 seconds), then check logs:
+   ```bash
+   docker compose logs web
+   ```
+
+5. **Access the application:**
+   - Frontend: http://localhost:8000
+   - Admin Panel: http://localhost:8000/admin/
+
+### Test User Accounts
+
+The seeder creates the following test accounts for you to use:
+
+#### Super Admin Account
+- **Username:** `admin`
+- **Password:** `admin123`
+- **Email:** `admin@pharmacy.com`
+- **Access:** Full admin access, can manage all products, categories, and orders
+
+#### Customer Account
+- **Username:** `customer`
+- **Password:** `customer123`
+- **Email:** `customer@pharmacy.com`
+- **Access:** Can browse products, add to cart, place orders
+
+#### Test User Account
+- **Username:** `testuser`
+- **Password:** `test123`
+- **Email:** `test@pharmacy.com`
+- **Access:** Customer account for testing functionalities
+
+### Testing the Application
+
+1. **Admin Functions:**
+   - Login with admin credentials at http://localhost:8000/admin/
+   - Manage products, categories, and view orders
+   - Access admin dashboard at http://localhost:8000/
+
+2. **Customer Functions:**
+   - Login with customer/testuser credentials
+   - Browse products and categories
+   - Add items to cart and place orders
+   - View order history
+
+3. **API Endpoints:**
+   - Health check: http://localhost:8000/api/health/
+   - Categories: http://localhost:8000/api/categories/
+   - Products: http://localhost:8000/api/products/
+   - Orders: http://localhost:8000/api/orders/ (requires authentication)
+
+### Development Commands
+
+```bash
+# View logs
+docker compose logs -f web
+
+# Run migrations
+docker compose exec web python manage.py migrate
+
+# Create superuser (if needed)
+docker compose exec web python manage.py createsuperuser
+
+# Run tests
+docker compose exec web python manage.py test
+
+# Access Django shell
+docker compose exec web python manage.py shell
+
+# Reseed database
+docker compose exec web python manage.py seed_data
+
+# Stop services
+docker compose down
+
+# Rebuild and restart
+docker compose down
+docker compose up --build
+```
 
 ## Deployment on Render
 
@@ -127,6 +220,27 @@ docker compose exec web pytest --cov=project --cov-report=term-missing
 ├── build.sh                 # Render build script
 └── render.yaml             # Render configuration
 ```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Port already in use:**
+   ```bash
+   docker compose down
+   docker compose up
+   ```
+
+2. **Database connection issues:**
+   ```bash
+   docker compose down -v  # Remove volumes
+   docker compose up --build
+   ```
+
+3. **Permission denied on build.sh:**
+   ```bash
+   chmod +x build.sh
+   ```
 
 ## Contributing
 
