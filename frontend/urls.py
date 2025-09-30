@@ -5,38 +5,36 @@ app_name = 'frontend'
 
 urlpatterns = [
     # Public pages
-    path('', views.HomeView.as_view(), name='home'),
-    path('products/', views.ProductListView.as_view(), name='product_list'),
-    path('products/<int:pk>/', views.ProductDetailView.as_view(), name='product_detail'),
+    path('', views.home, name='home'),
+    path('products/', views.product_list, name='product_list'),
+    path('products/<int:product_id>/', views.product_detail, name='product_detail'),
     
-    # User authentication
-    path('login/', views.LoginView.as_view(), name='login'),
-    path('logout/', views.LogoutView.as_view(), name='logout'),
-    path('register/', views.RegisterView.as_view(), name='register'),
+    # Authentication
+    path('login/', views.user_login, name='login'),
+    path('register/', views.user_register, name='register'),
+    path('logout/', views.user_logout, name='logout'),
     
-    # Customer order pages
-    path('cart/', views.CartView.as_view(), name='cart'),
-    path('checkout/', views.CheckoutView.as_view(), name='checkout'),
-    path('orders/', views.UserOrderListView.as_view(), name='user_orders'),
-    path('orders/<int:pk>/', views.OrderDetailView.as_view(), name='order_detail'),
+    # Cart and checkout (no login required)
+    path('cart/', views.cart_view, name='cart'),
+    path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
+    path('cart/update/', views.update_cart, name='update_cart'),
+    path('checkout/', views.checkout, name='checkout'),
+    path('order/<int:order_id>/confirmation/', views.order_confirmation, name='order_confirmation'),
     
-    # Admin CRUD pages
-    path('admin-dashboard/', views.AdminDashboardView.as_view(), name='admin_dashboard'),
+    # User orders (login required)
+    path('orders/', views.user_orders, name='user_orders'),
+    path('orders/<int:order_id>/', views.order_detail, name='order_detail'),
     
-    # Category CRUD
-    path('admin/categories/', views.CategoryListView.as_view(), name='category_list'),
-    path('admin/categories/create/', views.CategoryCreateView.as_view(), name='category_create'),
-    path('admin/categories/<int:pk>/edit/', views.CategoryUpdateView.as_view(), name='category_edit'),
-    path('admin/categories/<int:pk>/delete/', views.CategoryDeleteView.as_view(), name='category_delete'),
-    
-    # Product CRUD
-    path('admin/products/', views.AdminProductListView.as_view(), name='admin_product_list'),
-    path('admin/products/create/', views.ProductCreateView.as_view(), name='product_create'),
-    path('admin/products/<int:pk>/edit/', views.ProductUpdateView.as_view(), name='product_edit'),
-    path('admin/products/<int:pk>/delete/', views.ProductDeleteView.as_view(), name='product_delete'),
-    
-    # Order management
-    path('admin/orders/', views.AdminOrderListView.as_view(), name='admin_order_list'),
-    path('admin/orders/<int:pk>/', views.AdminOrderDetailView.as_view(), name='admin_order_detail'),
-    path('admin/orders/<int:pk>/update-status/', views.OrderStatusUpdateView.as_view(), name='order_status_update'),
+    # Admin pages (login required)
+    path('admin/', views.admin_dashboard, name='admin_dashboard'),
+    path('admin/products/', views.admin_products, name='admin_products'),
+    path('admin/products/create/', views.admin_product_create, name='admin_product_create'),
+    path('admin/products/<int:product_id>/edit/', views.admin_product_edit, name='admin_product_edit'),
+    path('admin/products/<int:product_id>/delete/', views.admin_product_delete, name='admin_product_delete'),
+    path('admin/categories/', views.admin_categories, name='admin_categories'),
+    path('admin/categories/create/', views.admin_category_create, name='admin_category_create'),
+    path('admin/categories/<int:category_id>/edit/', views.admin_category_edit, name='admin_category_edit'),
+    path('admin/categories/<int:category_id>/delete/', views.admin_category_delete, name='admin_category_delete'),
+    path('admin/orders/', views.admin_orders, name='admin_orders'),
+    path('admin/orders/<int:order_id>/', views.admin_order_detail, name='admin_order_detail'),
 ]
